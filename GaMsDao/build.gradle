@@ -1,0 +1,27 @@
+group 'goapptiv'
+version '0.0.1-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    runtime 'mysql:mysql-connector-java'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    compile "com.querydsl:querydsl-jpa:4.1.3"
+    compileOnly "com.querydsl:querydsl-apt:4.1.3:jpa"
+
+    compile 'org.springframework.boot:spring-boot-starter-security'
+
+    compile project(':GaMsEntities')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
