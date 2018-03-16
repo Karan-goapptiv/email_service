@@ -15,6 +15,8 @@ public class EmailSend {
 
     private List<String> cc;
 
+    private List<String> bcc;
+
     private String subject;
 
     private String message;
@@ -24,6 +26,7 @@ public class EmailSend {
     public EmailSend() {
         this.to = new ArrayList<String>();
         this.cc = new ArrayList<String>();
+        this.bcc = new ArrayList<String>();
     }
 
     public EmailSend(String from, String toList, String subject, String message) {
@@ -34,13 +37,14 @@ public class EmailSend {
         this.to.addAll(Arrays.asList(splitByComma(toList)));
     }
 
-    public EmailSend(String from, String toList, String ccList, String subject, String message) {
+    public EmailSend(String from, String toList, String ccList,String bccList, String subject, String message) {
         this();
         this.from = from;
         this.subject = subject;
         this.message = message;
         this.to.addAll(Arrays.asList(splitByComma(toList)));
         this.cc.addAll(Arrays.asList(splitByComma(ccList)));
+        this.bcc.addAll(Arrays.asList(splitByComma(bccList)));
     }
 
     /**
@@ -117,6 +121,10 @@ public class EmailSend {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public List<String> getBcc() { return bcc; }
+
+    public void setBcc(List<String> bcc) { this.bcc = bcc; }
 
     /**
      * @return the isHtml

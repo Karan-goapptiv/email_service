@@ -28,7 +28,7 @@ public class EmailTemplate {
         ClassLoader classLoader = getClass().getClassLoader();
 
         //get html file from its path
-        File file = new File(classLoader.getResource("email-templates/" + templateName).getFile());
+        File file = new File(classLoader.getResource("email-templates/localhost/" + templateName).getFile());
         String content;
         try {
             content = new String(Files.readAllBytes(file.toPath()));

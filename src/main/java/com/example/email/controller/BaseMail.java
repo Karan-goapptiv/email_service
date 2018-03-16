@@ -1,5 +1,8 @@
-package email;
+package com.example.email.controller;
 
+import email.EmailSend;
+import email.EmailSendService;
+import email.EmailTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
@@ -12,13 +15,13 @@ public class BaseMail {
     @Autowired
     EmailSendService emailSendService;
 
-    public void sendHtmlMail(String From , String To, String Subject ) throws MessagingException {
+    public BaseMail(String From , String To, String Subject, String templateName ) throws MessagingException {
 
         String from = From;
         String to = To;
         String subject = Subject;
 
-        EmailTemplate template = new EmailTemplate("hello-world.html");
+        EmailTemplate template = new EmailTemplate(templateName+".html");
 
         Map<String, String> replacements = new HashMap<String, String>();
         replacements.put("today", String.valueOf(new Date()));

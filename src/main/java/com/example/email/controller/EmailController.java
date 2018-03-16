@@ -10,14 +10,17 @@ import com.goapptiv.entities.request.EmailCreate;
 import com.goapptiv.services.base.EmailService;
 import com.goapptiv.services.base.EmailValueService;
 import com.goapptiv.services.base.TemplateService;
+import email.EmailSend;
+import email.EmailSendService;
+import email.EmailTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.security.Principal;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequestMapping("/v1/emails/send")
 @RestController
@@ -58,17 +61,23 @@ public class EmailController extends BaseController{
      * @return Email
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Map<String, Object> create(@Validated @RequestBody EmailCreate request) {
+    public Map<String, Object> create(@Validated @RequestBody EmailCreate request) throws MessagingException{
 
         // get template by name
         Template templateName = this.templateService.get(request.getTemplateName());
 
         // create new email
         Email email = new Email(request.getData(),templateName,request.getSubject());
-        email = this.emailService.save(email);
+       // email = this.emailService.save(email);
 
+        List<String> mail = request.getTo();
+
+        for (String to:mail) {
+            this.sendHtmlMail("karanchavanknc@gmail.com", to, request.getSubject(),
+                    request.getTemplateName());
+        }
         // create new relation with email values for type to
-        for (String value:request.getTo()) {
+        /*for (String value:request.getTo()) {
             EmailValue emailValue = new EmailValue(value, Type.TO,email);
             this.emailValueService.save(emailValue);
         }
@@ -84,7 +93,29 @@ public class EmailController extends BaseController{
             EmailValue emailValue = new EmailValue(value,Type.BCC,email);
             this.emailValueService.save(emailValue);
         }
-
+*/
         return this.done("email", email);
+    }
+
+    @Autowired
+    EmailSendService emailSendService;
+
+    public void sendHtmlMail(String From , String To, String Subject,String templateName ) throws MessagingException {
+
+        String from = From;
+        String to = To;
+        String subject = Subject;
+        String toCc = To;
+
+        EmailTemplate template = new EmailTemplate(templateName+".html");
+
+        Map<String, String> replacements = new HashMap<String, String>();
+        replacements.put("today", String.valueOf(new Date()));
+
+        String message = template.getTemplate(replacements);
+
+        EmailSend emailSend = new EmailSend(from, to, toCc,subject, message);
+        emailSend.setHtml(true);
+        emailSendService.send(emailSend);
     }
 }
