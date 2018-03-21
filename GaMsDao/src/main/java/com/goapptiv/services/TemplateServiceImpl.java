@@ -45,15 +45,4 @@ public class TemplateServiceImpl extends BaseServiceImp<Template> implements Tem
 
         return query.fetchFirst();
     }
-
-    /**
-     * Save Template
-     *
-     * @param template (required) template instance
-     * @return
-     */
-    @Override
-    public Template save(Template template) {
-        return this.repository.save(template);
-    }
 }

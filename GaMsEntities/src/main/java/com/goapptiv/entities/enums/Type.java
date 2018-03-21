@@ -9,26 +9,26 @@ public enum Type {
     private String type;
 
     /**
-     * Status Constructor
+     * Type Constructor
      *
-     * @param type (required) string status
+     * @param type (required) string type
      */
     Type(String type) {
         this.type = type;
     }
 
     /**
-     * Get string status
+     * Get string type
      */
     public String getType() {
         return type;
     }
 
     /**
-     * Converting string to Enum Status
+     * Converting string to Enum Type
      *
      * @param type (required) string to be converted
-     * @return Status enum
+     * @return Type enum
      */
     public static Type fromType(String type) {
         for (Type s : Type.values()) {

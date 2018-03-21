@@ -1,10 +1,8 @@
 package com.goapptiv.services;
 
 import com.goapptiv.entities.EmailValue;
-import com.goapptiv.entities.QEmailValue;
 import com.goapptiv.services.base.EmailValueService;
 import com.goapptiv.services.repositories.EmailValueRepository;
-import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

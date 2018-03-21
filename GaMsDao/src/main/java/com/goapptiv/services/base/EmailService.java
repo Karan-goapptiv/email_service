@@ -21,7 +21,7 @@ public interface EmailService {
      * Save Email
      *
      * @param email (required) email instance to save
-     * @return Email
+     * @return email
      */
     Email save(Email email);
 }

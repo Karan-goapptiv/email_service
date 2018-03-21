@@ -29,6 +29,7 @@ public class EmailController extends BaseController{
     private final EmailService emailService;
     private final EmailValueService emailValueService;
     private final TemplateService templateService;
+    private final EmailSendService emailSendService;
 
     /**
      * Constructor
@@ -39,12 +40,20 @@ public class EmailController extends BaseController{
      */
     @Autowired
     public EmailController(EmailService emailService, EmailValueService emailValueService,
-                           TemplateService templateService) {
+                           TemplateService templateService,EmailSendService emailSendService) {
         this.emailService = emailService;
         this.emailValueService = emailValueService;
         this.templateService = templateService;
+        this.emailSendService = emailSendService;
     }
 
+    /**
+     * Get list of emails
+     *
+     * @param templateName (required) name of the template
+     * @param principal
+     * @return emails
+     */
     @RequestMapping(value = "/{templateName}", method = RequestMethod.GET)
     public Map<String, Object> index(@PathVariable String templateName,Principal principal){
 
@@ -57,27 +66,21 @@ public class EmailController extends BaseController{
     /**
      * Create Email
      *
-     * @param request (required) From Fields
+     * @param request (required) Form Fields
      * @return Email
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Map<String, Object> create(@Validated @RequestBody EmailCreate request) throws MessagingException{
 
         // get template by name
-        Template templateName = this.templateService.get(request.getTemplateName());
+        Template template = this.templateService.get(request.getTemplateName());
 
         // create new email
-        Email email = new Email(request.getData(),templateName,request.getSubject());
-       // email = this.emailService.save(email);
+        Email email = new Email(request.getData(),template,request.getSubject());
+        this.emailService.save(email);
 
-        List<String> mail = request.getTo();
-
-        for (String to:mail) {
-            this.sendHtmlMail("karanchavanknc@gmail.com", to, request.getSubject(),
-                    request.getTemplateName());
-        }
         // create new relation with email values for type to
-        /*for (String value:request.getTo()) {
+        for (String value:request.getTo()) {
             EmailValue emailValue = new EmailValue(value, Type.TO,email);
             this.emailValueService.save(emailValue);
         }
@@ -93,29 +96,45 @@ public class EmailController extends BaseController{
             EmailValue emailValue = new EmailValue(value,Type.BCC,email);
             this.emailValueService.save(emailValue);
         }
-*/
+
+        // get list of data
+        List<String> data = new ArrayList<>();
+        data.addAll(Arrays.asList(splitByComma(request.getData())));
+
+        // send mail with html template
+        this.sendHtmlMail("karanchavanknc@gmail.com", request.getTo(),request.getCc(),request.getBcc(),
+                request.getSubject(), template.getLocation(),data);
+
         return this.done("email", email);
     }
 
-    @Autowired
-    EmailSendService emailSendService;
+    /**
+     * Sends mail
+     *
+     * @param from (required) sender of the mail
+     * @param to (required) recipients of the mail
+     * @param toCc (required) Cc recipients of the mail
+     * @param toBcc (required) Bcc recipients of the mail
+     * @param subject (required) subject of the mail
+     * @param templateName (required) html template name
+     * @param data (required) parameters for template
+     * @throws MessagingException
+     */
+    public void sendHtmlMail(String from , List<String> to, List<String> toCc, List<String> toBcc, String subject,
+                             String templateName, List<String> data) throws MessagingException {
 
-    public void sendHtmlMail(String From , String To, String Subject,String templateName ) throws MessagingException {
+        // pass values of email
+        EmailSend emailSend = new EmailSend(from, to, toCc, toBcc, subject, data,templateName);
 
-        String from = From;
-        String to = To;
-        String subject = Subject;
-        String toCc = To;
-
-        EmailTemplate template = new EmailTemplate(templateName+".html");
-
-        Map<String, String> replacements = new HashMap<String, String>();
-        replacements.put("today", String.valueOf(new Date()));
-
-        String message = template.getTemplate(replacements);
-
-        EmailSend emailSend = new EmailSend(from, to, toCc,subject, message);
+        //set html as true
         emailSend.setHtml(true);
-        emailSendService.send(emailSend);
+
+        // send email
+        emailSendService.sendHtmlMail(emailSend);
+    }
+
+    private String[] splitByComma(String toMultiple) {
+        String[] toSplit = toMultiple.split(",");
+        return toSplit;
     }
 }

@@ -1,4 +1,4 @@
-package email;
+package com.example.email.message;
 
 import email.util.AppUtil;
 
@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
 
-public class EmailTemplate {
+public class SmsTemplate {
 
     private String templateName;
 
@@ -15,7 +15,7 @@ public class EmailTemplate {
 
     private Map<String, String> replacementParams;
 
-    public EmailTemplate(String templateName) {
+    public SmsTemplate(String templateName) {
         this.templateName = templateName;
         try {
             this.template = loadTemplate(templateName);
@@ -24,11 +24,11 @@ public class EmailTemplate {
         }
     }
 
-    private String loadTemplate(String template) throws Exception {
+    private String loadTemplate(String templateName) throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
 
-        //get html file from its path
-        File file = new File(classLoader.getResource(template).getFile());
+        //get file from its path
+        File file = new File(classLoader.getResource(templateName).getFile());
         String content;
         try {
             content = new String(Files.readAllBytes(file.toPath()));
@@ -39,7 +39,6 @@ public class EmailTemplate {
     }
 
     public String getTemplate(Map<String, String> replacements) {
-
         String cTemplate = this.getTemplate();
 
         if (!AppUtil.isObjectEmpty(cTemplate)) {
@@ -71,6 +70,5 @@ public class EmailTemplate {
     }
 
     public void setReplacementParams(Map<String, String> replacementParams) {
-        this.replacementParams = replacementParams;
-    }
+        this.replacementParams = replacementParams; }
 }

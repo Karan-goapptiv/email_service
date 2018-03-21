@@ -14,12 +14,4 @@ public interface TemplateService {
      * @return template
      */
     Template get(String name);
-
-    /**
-     * Save Template
-     *
-     * @param template (required) template instance
-     * @return template
-     */
-    Template save(Template template);
 }

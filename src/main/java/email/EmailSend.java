@@ -19,133 +19,96 @@ public class EmailSend {
 
     private String subject;
 
-    private String message;
+    private List<String> message;
+
+    private String templateName;
 
     private boolean isHtml;
 
+    /**
+     * EmailSend constructor
+     */
     public EmailSend() {
         this.to = new ArrayList<String>();
         this.cc = new ArrayList<String>();
         this.bcc = new ArrayList<String>();
+        this.message = new ArrayList<String>();
     }
 
-    public EmailSend(String from, String toList, String subject, String message) {
+    /**
+     * EmailSend constructor
+     *
+     * @param from (required) sender of the mail
+     * @param toList (required) recipients of the mail
+     * @param subject (required) subject of the mail
+     * @param message (required) parameters for the template
+     * @param templateName (required) html template for the mail
+     */
+    public EmailSend(String from, List<String> toList, String subject, List<String> message, String templateName) {
         this();
         this.from = from;
         this.subject = subject;
         this.message = message;
-        this.to.addAll(Arrays.asList(splitByComma(toList)));
+        this.to = toList;
+        this.templateName=templateName;
     }
 
-    public EmailSend(String from, String toList, String ccList,String bccList, String subject, String message) {
+    /**
+     * EmailSend constructor
+     *
+     * @param from (required) sender of the mail
+     * @param toList (required) recipients of the mail
+     * @param ccList (required) recipients of the mail for type CC
+     * @param bccList (required) recipients of the mail for type BCC
+     * @param subject (required) subject of the mail
+     * @param message (required) parameters for the template
+     * @param templateName (required) html template for the mail
+     */
+    public EmailSend(String from, List<String> toList, List<String> ccList, List<String> bccList, String subject,
+                     List<String> message,String templateName) {
         this();
         this.from = from;
         this.subject = subject;
         this.message = message;
-        this.to.addAll(Arrays.asList(splitByComma(toList)));
-        this.cc.addAll(Arrays.asList(splitByComma(ccList)));
-        this.bcc.addAll(Arrays.asList(splitByComma(bccList)));
+        this.templateName=templateName;
+        this.to = toList;
+        this.cc = ccList;
+        this.bcc = bccList;
     }
 
-    /**
-     * @return the from
-     */
-    public String getFrom() {
-        return from;
-    }
+    public String getFrom() { return from; }
 
-    /**
-     * @param from
-     *            the from to set
-     */
-    public void setFrom(String from) {
-        this.from = from;
-    }
+    public void setFrom(String from) { this.from = from; }
 
-    /**
-     * @return the to
-     */
-    public List<String> getTo() {
-        return to;
-    }
+    public List<String> getTo() { return to; }
 
-    /**
-     * @param to
-     *            the to to set
-     */
-    public void setTo(List<String> to) {
-        this.to = to;
-    }
+    public void setTo(List<String> to) { this.to = to; }
 
-    /**
-     * @return the cc
-     */
-    public List<String> getCc() {
-        return cc;
-    }
+    public List<String> getCc() { return cc; }
 
-    /**
-     * @param cc
-     *            the cc to set
-     */
-    public void setCc(List<String> cc) {
-        this.cc = cc;
-    }
+    public void setCc(List<String> cc) { this.cc = cc; }
 
-    /**
-     * @return the subject
-     */
-    public String getSubject() {
-        return subject;
-    }
+    public String getSubject() { return subject; }
 
-    /**
-     * @param subject
-     *            the subject to set
-     */
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
+    public void setSubject(String subject) { this.subject = subject; }
 
-    /**
-     * @return the message
-     */
-    public String getMessage() {
-        return message;
-    }
+    public List<String> getMessage() { return message; }
 
-    /**
-     * @param message
-     *            the message to set
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    public void setMessage(List<String> message) { this.message = message; }
 
     public List<String> getBcc() { return bcc; }
 
     public void setBcc(List<String> bcc) { this.bcc = bcc; }
 
-    /**
-     * @return the isHtml
-     */
+    public String getTemplateName() { return templateName; }
+
+    public void setTemplateName(String templateName) { this.templateName = templateName; }
+
     public boolean isHtml() {
         return isHtml;
     }
 
-    /**
-     * @param isHtml the isHtml to set
-     */
     public void setHtml(boolean isHtml) {
         this.isHtml = isHtml;
-    }
-
-    private String[] splitByComma(String toMultiple) {
-        String[] toSplit = toMultiple.split(",");
-        return toSplit;
-    }
-
-    public String getToAsList() {
-        return AppUtil.concatenate(this.to, ",");
     }
 }

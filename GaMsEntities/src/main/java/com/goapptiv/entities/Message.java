@@ -4,12 +4,11 @@ import com.goapptiv.entities.enums.Status;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "EMAILS")
-public class Email implements Serializable{
+@Table(name = "MESSAGES")
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +20,7 @@ public class Email implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "template_id")
-    private Template templateId;
-
-    @Column
-    private String subject;
+    private MessageTemplate messageTemplateId;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -37,19 +33,17 @@ public class Email implements Serializable{
     /**
      * Default Constructor
      */
-    public Email(){}
+    public Message(){}
 
     /**
-     * Email Constructor
+     * Message Constructor
      *
      * @param data (required)
-     * @param templateId (required) name of the template
-     * @param subject (optional) subject of the mail
+     * @param messageTemplateId (required) name of the template
      */
-    public Email(String data, Template templateId, String subject) {
+    public Message(String data, MessageTemplate messageTemplateId) {
         this.data = data;
-        this.templateId = templateId;
-        this.subject = subject;
+        this.messageTemplateId = messageTemplateId;
     }
 
     public Long getId() { return id; }
@@ -60,13 +54,9 @@ public class Email implements Serializable{
 
     public void setData(String data) { this.data = data; }
 
-    public Template getTemplateId() { return templateId; }
+    public MessageTemplate getMessageTemplateId() { return messageTemplateId; }
 
-    public void setTemplateId(Template templateId) { this.templateId = templateId; }
-
-    public String getSubject() { return subject; }
-
-    public void setSubject(String subject) { this.subject = subject; }
+    public void setMessageTemplateId(MessageTemplate messageTemplateId) { this.messageTemplateId = messageTemplateId; }
 
     public Status getStatus() { return status; }
 

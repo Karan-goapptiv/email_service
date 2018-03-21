@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
@@ -17,53 +19,47 @@ public class EmailSendService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void send(EmailSend eParams) throws MessagingException {
-
-        if (eParams.isHtml())
-                sendHtmlMail(eParams);
-        else {
-            sendPlainTextMail(eParams);
-        }
-
-    }
-
-    private void sendHtmlMail(EmailSend eParams) throws MessagingException {
+    public void sendHtmlMail(EmailSend eParams) throws MessagingException {
 
         boolean isHtml = true;
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
+        // set recipients of the mail
         helper.setTo(eParams.getTo().toArray(new String[eParams.getTo().size()]));
-        helper.setReplyTo(eParams.getFrom());
-        helper.setFrom(eParams.getFrom());
-        helper.setSubject(eParams.getSubject());
-        helper.setText(eParams.getMessage(), isHtml);
 
+        //set reply to for the mail
+        helper.setReplyTo(eParams.getFrom());
+
+        // set sender of the mail
+        helper.setFrom(eParams.getFrom());
+
+        // set mail subject
+        helper.setSubject(eParams.getSubject());
+
+        // get template by template name
+        EmailTemplate template = new EmailTemplate(eParams.getTemplateName());
+
+        // parameters for template
+        Map<String, String> replacements = new HashMap<String, String>();
+        for (String data:eParams.getMessage()) {
+            replacements.put("user",data);
+            String text = template.getTemplate(replacements);
+            helper.setText(text, isHtml);
+        }
+
+        // set Cc recipients of the mail
         if (eParams.getCc().size() > 0) {
             helper.setCc(eParams.getCc().toArray(new String[eParams.getCc().size()]));
         }
 
-        mailSender.send(message);
-    }
-
-    private void sendPlainTextMail(EmailSend eParams) {
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-
-        eParams.getTo().toArray(new String[eParams.getTo().size()]);
-        mailMessage.setTo(eParams.getTo().toArray(new String[eParams.getTo().size()]));
-        mailMessage.setReplyTo(eParams.getFrom());
-        mailMessage.setFrom(eParams.getFrom());
-        mailMessage.setSubject(eParams.getSubject());
-        mailMessage.setText(eParams.getMessage());
-
-        if (eParams.getCc().size() > 0) {
-            mailMessage.setCc(eParams.getCc().toArray(new String[eParams.getCc().size()]));
+        // set Bcc recipients of the mail
+        if(eParams.getBcc().size() > 0) {
+            helper.setBcc(eParams.getBcc().toArray(new String[eParams.getBcc().size()]));
         }
 
-        mailSender.send(mailMessage);
-
+        // sends the mail
+        mailSender.send(message);
     }
-
 }

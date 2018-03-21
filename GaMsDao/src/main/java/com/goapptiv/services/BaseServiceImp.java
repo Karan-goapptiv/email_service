@@ -2,8 +2,6 @@ package com.goapptiv.services;
 
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 

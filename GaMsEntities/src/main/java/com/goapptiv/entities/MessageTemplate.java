@@ -1,11 +1,10 @@
 package com.goapptiv.entities;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
-@Table(name = "EMAILTEMPLATES")
-public class Template implements Serializable{
+@Table(name = "MESSAGETEMPLATES")
+public class MessageTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,15 +19,15 @@ public class Template implements Serializable{
     /**
      * Default Constructor
      */
-    public Template() {}
+    public MessageTemplate() {}
 
     /**
-     * Templates Constructor
+     * MessageTemplate Constructor
      *
      * @param name (required) name of template
      * @param template (required) template location
      */
-    public Template(String name, String template) {
+    public MessageTemplate(String name, String template) {
         this.name = name;
         this.templates = template;
     }
